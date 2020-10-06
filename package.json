@@ -1,0 +1,25 @@
+{
+  "name": "javascript-algorithms",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watch",
+    "ci": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hd4ng/javascript-algorithms.git"
+  },
+  "keywords": [],
+  "author": "hdang.log@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hd4ng/javascript-algorithms/issues"
+  },
+  "homepage": "https://github.com/hd4ng/javascript-algorithms#readme",
+  "dependencies": {
+    "@types/jest": "^26.0.14",
+    "jest": "^26.5.0"
+  }
+}
