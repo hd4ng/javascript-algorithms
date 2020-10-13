@@ -1,5 +1,17 @@
 export default class LinkedListNode {
-  constructor() {}
+  /**
+   * @param {*} value
+   * @param {Object} next
+   */
+  constructor(value, next = null) {
+    this.value = value
+    this.next = next
+  }
 
-  toString() {}
+  /**
+   * @param {Function} callback
+   */
+  toString(callback) {
+    return callback ? callback(this.value) : `${this.value}`
+  }
 }
