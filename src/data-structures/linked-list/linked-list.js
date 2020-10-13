@@ -58,7 +58,41 @@ export default class LinkedList {
    * @param {*} value
    * @return {LinkedListNode}
    */
-  delete(value) {}
+  delete(value) {
+    if (!this.head) {
+      return null
+    }
+
+    let deletedNode = null
+
+    // If the head must be deleted then make the next node that is differ from
+    // the head to be a new head.
+    while (this.head && this.compare.equal(this.head.value, value)) {
+      deletedNode = this.head
+      this.head = this.head.next
+    }
+
+    let currentNode = this.head
+
+    if (currentNode !== null) {
+      // If next node must be deleted then make next node to be a next next one.
+      while (currentNode.next) {
+        if (this.compare.equal(currentNode.next.value, value)) {
+          deletedNode = currentNode.next
+          currentNode.next = currentNode.next.next
+        } else {
+          currentNode = currentNode.next
+        }
+      }
+    }
+
+    // Check whether the tail must be deleted
+    if (this.compare.equal(this.tail.value, value)) {
+      this.tail = currentNode
+    }
+
+    return deletedNode
+  }
 
   /**
    * @param {Object} findParams
@@ -71,12 +105,53 @@ export default class LinkedList {
   /**
    * @returns {LinkedListNode}
    */
-  deleteTail() {}
+  deleteTail() {
+    const deletedTail = this.tail
+
+    // If there is only one node in linked list.
+    if (this.head === this.tail) {
+      this.head = null
+      this.tail = null
+      return deletedTail
+    }
+
+    // If there are many nodes in linked list...
+
+    // Rewind to the last node and delete "next" link for the node before last
+    // node.
+    let currentNode = this.head
+    while (currentNode.next) {
+      if (!currentNode.next.next) {
+        currentNode.next = null
+      } else {
+        currentNode = currentNode.next
+      }
+    }
+
+    this.tail = currentNode
+
+    return deletedTail
+  }
 
   /**
    * @returns {LinkedListNode}
    */
-  deleteHead() {}
+  deleteHead() {
+    if (!this.head) {
+      return null
+    }
+
+    const deletedHead = this.head
+
+    if (this.head.next) {
+      this.head = this.head.next
+    } else {
+      this.head = null
+      this.tail = null
+    }
+
+    return deletedHead
+  }
 
   /**
    * @param {*[]} values - Array of values that need to be converted to Linked
