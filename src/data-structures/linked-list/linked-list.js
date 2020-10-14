@@ -100,7 +100,29 @@ export default class LinkedList {
    * @param {function} findParams.callback
    * @returns {LinkedListNode}
    */
-  find({value = undefined, callback = undefined}) {}
+  find({value = undefined, callback = undefined}) {
+    if (!this.head) {
+      return null
+    }
+
+    let currentNode = this.head
+
+    while (currentNode) {
+      // If callback is specified then try to find node by callback
+      if (callback && callback(currentNode.value)) {
+        return currentNode
+      }
+
+      // If value is specified then try to compare by value.
+      if (value !== undefined && this.compare.equal(currentNode.value, value)) {
+        return currentNode
+      }
+
+      currentNode = currentNode.next
+    }
+
+    return null
+  }
 
   /**
    * @returns {LinkedListNode}
@@ -158,7 +180,11 @@ export default class LinkedList {
    * List.
    * @returns {LinkedList}
    */
-  fromArray(values) {}
+  fromArray(values) {
+    values.forEach(value => this.append(value))
+
+    return this
+  }
 
   /**
    * @returns LinkedListNode[]
