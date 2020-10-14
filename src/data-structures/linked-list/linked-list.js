@@ -215,5 +215,25 @@ export default class LinkedList {
    * Reverses a linked list.
    * @returns {LinkedList}
    */
-  reverse() {}
+  reverse() {
+    let currNode = this.head
+    let prevNode = null
+    let nextNode = null
+
+    while (currNode) {
+      // Store next node.
+      nextNode = currNode.next
+
+      // Change next node of current node so it would link to previous node.
+      currNode.next = prevNode
+
+      // Move prevNode and currentNode one step forward.
+      prevNode = currNode
+      currNode = nextNode
+    }
+
+    // Reset head and tail
+    this.tail = this.head
+    this.head = prevNode
+  }
 }
