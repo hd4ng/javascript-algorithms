@@ -3,29 +3,30 @@ import Comparator from '../../utils/comparator/comparator'
 
 export default class LinkedList {
   /**
-   *
-   * @param {(a:*, b:*) => boolean} comparatorFunction
+   * @constructor
+   * @param {*} comparatorFunction
    */
   constructor(comparatorFunction) {
-    /** @var LinkedListNode */
+    /** @type {LinkedListNode} */
     this.head = null
 
-    /** @var LinkedListNode */
+    /** @type {LinkedListNode} */
     this.tail = null
 
     this.compare = new Comparator(comparatorFunction)
   }
 
   /**
+   * Add node to the beginning of the list.
+   *
    * @param {*} value
    * @returns {LinkedList}
    */
   prepend(value) {
-    // Make new node to be a head.
     const newNode = new LinkedListNode(value, this.head)
     this.head = newNode
 
-    // If there is no tail yet let's make new node to be a tail.
+    // If there is no tail let's make new node a tail.
     if (!this.tail) {
       this.tail = newNode
     }
@@ -34,20 +35,22 @@ export default class LinkedList {
   }
 
   /**
+   * Add node to the end of the list.
+   *
    * @param {*} value
    * @returns {LinkedList}
    */
   append(value) {
     const newNode = new LinkedListNode(value)
 
-    // If there is no head yet let's make new node a head
-    if (!this.head && !this.tail) {
+    // If there is node head let make new node a head
+    if (!this.head) {
       this.head = newNode
       this.tail = newNode
       return this
     }
 
-    // Attach newNode to the end of linked list
+    // Attach node to the end of the list.
     this.tail.next = newNode
     this.tail = newNode
 
@@ -55,8 +58,10 @@ export default class LinkedList {
   }
 
   /**
+   * Remove node from the list.
+   *
    * @param {*} value
-   * @return {LinkedListNode}
+   * @returns {LinkedListNode}
    */
   delete(value) {
     if (!this.head) {
@@ -65,8 +70,8 @@ export default class LinkedList {
 
     let deletedNode = null
 
-    // If the head must be deleted then make the next node that is differ from
-    // the head to be a new head.
+    // If the head must be deleted then make next node that is differ than the
+    // head to be a new head.
     while (this.head && this.compare.equal(this.head.value, value)) {
       deletedNode = this.head
       this.head = this.head.next
@@ -75,7 +80,8 @@ export default class LinkedList {
     let currentNode = this.head
 
     if (currentNode !== null) {
-      // If next node must be deleted then make next node to be a next next one.
+      // If next node must be deleted than make next node to be the next next
+      // one.
       while (currentNode.next) {
         if (this.compare.equal(currentNode.next.value, value)) {
           deletedNode = currentNode.next
@@ -86,7 +92,7 @@ export default class LinkedList {
       }
     }
 
-    // Check whether the tail must be deleted
+    // Check if the tail must be deleted.
     if (this.compare.equal(this.tail.value, value)) {
       this.tail = currentNode
     }
@@ -95,9 +101,71 @@ export default class LinkedList {
   }
 
   /**
-   * @param {Object} findParams
-   * @param {*} findParams.value
-   * @param {function} findParams.callback
+   * Remove the first node from the list.
+   *
+   * @return {LinkedListNode}
+   */
+  deleteHead() {
+    if (!this.head) {
+      return null
+    }
+
+    const deletedHead = this.head
+
+    // If there is one node in the list.
+    if (this.head === this.tail) {
+      this.head = null
+      this.tail = null
+      return deletedHead
+    }
+
+    // If there are many nodes in the list...
+    this.head = this.head.next
+
+    return deletedHead
+  }
+
+  /**
+   * Remove the last node from the list.
+   *
+   * @return {LinkedListNode}
+   */
+  deleteTail() {
+    if (!this.head) {
+      return null
+    }
+
+    const deletedTail = this.tail
+
+    // If there is one node in the list.
+    if (this.head === this.tail) {
+      this.head = null
+      this.tail = null
+      return deletedTail
+    }
+
+    // If there are many nodes in the list...
+    // Rewind to the last node and remove the "next" link for the node before
+    // the tail.
+    let currentNode = this.head
+    while (currentNode.next) {
+      if (currentNode.next.next === null) {
+        currentNode.next = null
+        this.tail = currentNode
+      } else {
+        currentNode = currentNode.next
+      }
+    }
+
+    return deletedTail
+  }
+
+  /**
+   * Find a node from the list.
+   *
+   * @param {object} params
+   * @param {*} params.value
+   * @param {function} params.callback
    * @returns {LinkedListNode}
    */
   find({value = undefined, callback = undefined}) {
@@ -108,13 +176,13 @@ export default class LinkedList {
     let currentNode = this.head
 
     while (currentNode) {
-      // If callback is specified then try to find node by callback
+      // If callback is specified then find node by callback.
       if (callback && callback(currentNode.value)) {
         return currentNode
       }
 
-      // If value is specified then try to compare by value.
-      if (value !== undefined && this.compare.equal(currentNode.value, value)) {
+      // If value is specified then compare node by value.
+      if (value && this.compare.equal(currentNode.value, value)) {
         return currentNode
       }
 
@@ -125,74 +193,54 @@ export default class LinkedList {
   }
 
   /**
-   * @returns {LinkedListNode}
-   */
-  deleteTail() {
-    const deletedTail = this.tail
-
-    // If there is only one node in linked list.
-    if (this.head === this.tail) {
-      this.head = null
-      this.tail = null
-      return deletedTail
-    }
-
-    // If there are many nodes in linked list...
-
-    // Rewind to the last node and delete "next" link for the node before last
-    // node.
-    let currentNode = this.head
-    while (currentNode.next) {
-      if (!currentNode.next.next) {
-        currentNode.next = null
-      } else {
-        currentNode = currentNode.next
-      }
-    }
-
-    this.tail = currentNode
-
-    return deletedTail
-  }
-
-  /**
-   * @returns {LinkedListNode}
-   */
-  deleteHead() {
-    if (!this.head) {
-      return null
-    }
-
-    const deletedHead = this.head
-
-    if (this.head.next) {
-      this.head = this.head.next
-    } else {
-      this.head = null
-      this.tail = null
-    }
-
-    return deletedHead
-  }
-
-  /**
-   * @param {*[]} values - Array of values that need to be converted to Linked
-   * List.
+   * Reverse linked list.
+   *
    * @returns {LinkedList}
    */
-  fromArray(values) {
-    values.forEach(value => this.append(value))
+  reverse() {
+    let currentNode = this.head
+    let previousNode = null
+    let nextNode = null
+
+    while (currentNode) {
+      // Store the next node.
+      nextNode = currentNode.next
+
+      // Change the next link of the current node to the previous node.
+      currentNode.next = previousNode
+
+      // Move previous node and current node one step forward.
+      previousNode = currentNode
+      currentNode = nextNode
+    }
+
+    // Reset head and tail
+    this.tail = this.head
+    this.head = previousNode
 
     return this
   }
 
   /**
-   * @returns LinkedListNode[]
+   * Create linked list from array.
+   *
+   * @param {*[]} values
+   * @returns {LinkedList}
+   */
+  fromArray(values) {
+    values.forEach(value => this.append(value))
+    return this
+  }
+
+  /**
+   * Create array of nodes from the list.
+   *
+   * @return {LinkedListNode[]}
    */
   toArray() {
     const nodes = []
-
     let currentNode = this.head
+
     while (currentNode) {
       nodes.push(currentNode)
       currentNode = currentNode.next
@@ -202,38 +250,14 @@ export default class LinkedList {
   }
 
   /**
-   * @param {function} [callback]
-   * @returns string
+   * Print linked list.
+   *
+   * @param {function} callback
+   * @returns {string}
    */
   toString(callback) {
     return this.toArray()
       .map(node => node.toString(callback))
       .toString()
-  }
-
-  /**
-   * Reverses a linked list.
-   * @returns {LinkedList}
-   */
-  reverse() {
-    let currNode = this.head
-    let prevNode = null
-    let nextNode = null
-
-    while (currNode) {
-      // Store next node.
-      nextNode = currNode.next
-
-      // Change next node of current node so it would link to previous node.
-      currNode.next = prevNode
-
-      // Move prevNode and currentNode one step forward.
-      prevNode = currNode
-      currNode = nextNode
-    }
-
-    // Reset head and tail
-    this.tail = this.head
-    this.head = prevNode
   }
 }
